@@ -1,0 +1,35 @@
+{
+    "all_ss_ports":[],
+    "all_ss_ports_example":[10000,10002,100003],
+    "all_ss_no_change_ports":{},
+    "all_ss_no_change_ports_example":{"1001":"example_password","1002":"example_password"},
+    "all_ss_hub_ports":{},
+    "all_ss_hub_ports_example":{"2001":"example_password","2002":"example_password"},
+    "root_password":"",
+    "ssh_port":"",
+    "pub_key_path":"",
+    "pub_key_path_example":"/full/path/to/the/key_file 绝对路径",
+    "pub_key_path_example":"key_file 相对路径",
+    "encrypt_key":"",
+    "apache_http_auth":{},
+    "apache_http_auth_example":{"username":"password"},
+    "change_method_point":[],
+    "change_method_point_example":[3,5,8,9,15],
+    "apache_port":"",
+    "apache_port_example":"9998",
+    "var_www_path_key":"",
+    "var_www_path_key_example":"dont_play_with_me",
+    "说明":{
+        "1":"all_ss_ports 应该是所有想要用于ss开放的端口，如果为空，那么就会使用默认+6个随机端口 all_ss_no_change_ports 这个是设定使用默认ss iv length的port 形式如：参考example all_ss_hub_ports 这个是设定使用更安全加密GCM加密的port 形式如: 参考example",
+        "2":"root_password 如果设置，那么会在安装ss过程中修改为这个密码，如果留空，那么默认不会修改root密码",
+        "3":"ssh 开放的端口，可以自定义，如果留空，则默认修改ssh 端口22为 10011",
+        "4":"pub_key_path 这里是需要加入ssh authorized_keys中的公钥文件路径，路径如果找不到， 那么就不会写入authorized_keys文件.写入文件是因为有些VPS默认只允许key方式登录 文件中可以多个pub_key,每个一行",
+        "5":"encrypt_key 这个密码是用在加密一些需要通过apache下载的文件，密码用在Encrypt_or_Decrypt.py脚本中 安装完成后会在/bin/Encrypt_or_Decrypt.py 如果留空，那么使用默认密码",
+        "6":"apache_http_auth 这里需要设定username + password，用在http AUTH，必须自定义设置。直接修改username和password为自己的值即可。",
+        "7":"apache_port 设定apache的端口，留空使用默认值",
+        "8":"change_method_point 设定什么时间会修改加密方式和ciphers 都是整点数字，小时 例如： [3,5,6,12,18,21] 留空则默认每隔3小时换一次",
+        "9":"var_www_path_key 设定apache /var/www/html的下一级目录，关键字，防止其他人猜测到自己的WEB目录结构，不配置使用默认值",
+        "example":"所有example结尾的项都只是一个参考样例"
+    }
+}
+
