@@ -1,0 +1,24 @@
+# Define History
+shopt -s histappend
+export HISTSIZE=100000
+export HISTFILESIZE=500000
+export HISTCONTROL=ignoredups:erasedups
+export PROMPT_COMMAND="history -a;history -c;history -r;$PROMPT_COMMAND"
+
+HISTORY_DIR="/logs/history"
+export HISTFILE="${HISTORY_DIR}/${LOGNAME}_history"
+export HISTTIMEFORMAT="[%Y-%m-%d %H:%M:%S] "
+USER_IP="$(who -u am i 2>/dev/null | awk '{print $NF}' | sed -e 's/[()]//g')"
+
+if [ -z "${USER_IP}" ];
+then
+    USER_IP="$(hostname)"
+fi
+if [ ! -d "${HISTORY_DIR}" ]
+then
+    sudo mkdir -p "${HISTORY_DIR}"
+    sudo chmod 777 "${HISTORY_DIR}"
+fi
+
+chmod 600 "${HISTFILE}" 2>/dev/null
+

@@ -1,0 +1,117 @@
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number: 11777961998847648577 (0xa373ba091f5d2341)
+    Signature Algorithm: sha256WithRSAEncryption
+        Issuer: C=CN, ST=Beijing, L=Xicheng Qu, Beijing Shi, O=Crazy House Technology Co., Ltd, OU=Crazy House Technology Co., Ltd, CN=Crazy House Technology Co., Ltd. root certificate
+        Validity
+            Not Before: Dec 11 03:48:56 2017 GMT
+            Not After : Dec  9 03:48:56 2027 GMT
+        Subject: C=CN, ST=Beijing, L=Xicheng Qu, Beijing Shi, O=Crazy House Technology Co., Ltd, OU=Crazy House Technology Co., Ltd, CN=love.gfw.com
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+                Public-Key: (2048 bit)
+                Modulus:
+                    00:e3:07:ff:06:79:c1:50:1e:13:cb:86:61:cf:fe:
+                    47:7d:83:d8:06:96:b3:97:e5:18:f6:b9:b9:ae:3a:
+                    2c:02:c6:e9:26:63:08:9e:40:33:f4:5d:b7:13:bc:
+                    ea:6c:e0:09:23:8b:92:b5:95:b2:ce:25:b1:1b:14:
+                    e7:a3:40:3a:71:e6:63:5a:e7:9a:59:49:9f:f5:b0:
+                    7c:92:3a:af:ca:bf:53:f7:89:7c:33:3e:d9:28:7d:
+                    ee:b4:c7:bd:ac:ec:0b:7b:e4:de:ff:96:30:e5:d9:
+                    3c:ad:67:c5:a2:f4:0f:80:89:ad:9b:82:a8:23:78:
+                    23:43:8c:f2:cb:da:86:71:f5:9b:27:dd:11:7c:11:
+                    f8:62:16:0d:39:cb:bd:d6:91:26:7c:9f:a7:3d:16:
+                    aa:5d:fe:fb:38:53:b3:0c:13:45:03:23:e1:6a:6c:
+                    a7:cc:a0:49:2b:28:24:ce:0e:a7:65:fc:ef:e7:31:
+                    9a:10:37:3f:da:5b:eb:7d:db:68:76:ee:23:78:21:
+                    34:4f:91:21:bd:f5:4c:1c:9c:95:53:de:24:10:16:
+                    f8:5d:37:9b:bd:c1:f4:c2:cb:0c:4b:20:66:1b:64:
+                    46:10:a3:75:67:50:c6:8b:11:81:2c:03:7e:8c:28:
+                    44:d8:cd:69:ad:56:0f:2f:57:d6:05:f2:cb:98:c1:
+                    82:d9
+                Exponent: 65537 (0x10001)
+        X509v3 extensions:
+            X509v3 Basic Constraints: critical
+                CA:FALSE
+            Netscape Cert Type: 
+                SSL Server
+            Netscape Revocation Url: 
+                http://gfw.com/ca/gfw_com.ca.crl
+            X509v3 Key Usage: critical
+                Key Encipherment, Key Agreement
+            X509v3 Extended Key Usage: 
+                TLS Web Server Authentication
+            X509v3 Issuer Alternative Name: 
+                URI:http://gfw.com/ca/gfw_com.ca.crt, DNS:gfw.com, DNS:*.gfw.com, email:ca@gfw.com
+            X509v3 Subject Alternative Name: 
+                URI:http://gfw.com/ca/gfw_com.ca.crt, email:ca@gfw.com, DNS:love.gfw.com, DNS:love
+            X509v3 Subject Key Identifier: 
+                CD:F8:70:46:BD:FA:BC:7F:EB:D8:8F:A5:8B:89:B1:FB:C0:3C:15:30
+            X509v3 Authority Key Identifier: 
+                keyid:C8:E9:D9:27:38:9A:67:37:35:FC:CE:90:AB:0E:C5:65:78:B0:A4:77
+                DirName:/C=CN/ST=Beijing/L=Xicheng Qu, Beijing Shi/O=Crazy House Technology Co., Ltd/OU=Crazy House Technology Co., Ltd/CN=Crazy House Technology Co., Ltd. root certificate
+                serial:A3:73:BA:09:1F:5D:23:3E
+
+            Authority Information Access: 
+                CA Issuers - URI:http://gfw.com/ca/gfw_com.ca.crt
+
+            X509v3 CRL Distribution Points: 
+
+                Full Name:
+                  URI:http://gfw.com/ca/gfw_com.ca.crl
+
+    Signature Algorithm: sha256WithRSAEncryption
+         3c:9d:7c:b8:b0:62:6a:f3:e9:12:a9:5b:aa:59:e8:77:b7:34:
+         b4:d0:bc:26:d1:28:18:70:b7:1f:48:18:bc:7f:45:5a:44:1c:
+         ee:02:bd:75:9a:fc:88:23:9b:b1:e5:7d:d4:68:41:23:87:34:
+         b8:fb:b1:0d:ce:a6:77:55:00:ad:da:36:da:16:da:c0:66:09:
+         fb:af:80:19:2a:b4:b9:4f:56:9e:d7:c7:fd:99:4e:d8:fa:ea:
+         6c:c8:54:58:bb:f6:25:0e:98:6d:be:a8:d2:8b:ad:cf:39:fe:
+         1f:5d:55:d8:10:14:8f:bb:44:57:cf:fe:b6:da:d8:80:28:1a:
+         db:86:9f:6c:7f:83:28:75:27:02:2f:33:ff:90:fd:84:20:19:
+         59:2d:e1:94:0f:82:c8:7c:ed:ab:87:1e:80:4c:92:a0:0b:1c:
+         e5:f3:73:f7:90:ba:a9:d6:5b:4e:13:d6:82:25:5e:72:f8:b3:
+         50:b8:90:d7:e7:37:b9:ec:1b:bf:dc:ef:7b:1f:7b:aa:70:68:
+         ec:51:87:26:cd:01:32:68:30:75:f0:d6:bc:b0:ff:8c:e4:be:
+         e3:d2:18:cb:d1:1e:20:9a:e4:c1:90:c3:2b:98:bb:02:0c:d8:
+         7a:bb:06:4d:ea:c8:bd:5e:fa:87:5f:58:1a:9e:ec:27:51:4c:
+         fc:a4:e2:ab
+-----BEGIN CERTIFICATE-----
+MIIGszCCBZugAwIBAgIJAKNzugkfXSNBMA0GCSqGSIb3DQEBCwUAMIHRMQswCQYD
+VQQGEwJDTjEQMA4GA1UECBMHQmVpamluZzEgMB4GA1UEBxMXWGljaGVuZyBRdSwg
+QmVpamluZyBTaGkxKDAmBgNVBAoTH0NyYXp5IEhvdXNlIFRlY2hub2xvZ3kgQ28u
+LCBMdGQxKDAmBgNVBAsTH0NyYXp5IEhvdXNlIFRlY2hub2xvZ3kgQ28uLCBMdGQx
+OjA4BgNVBAMTMUNyYXp5IEhvdXNlIFRlY2hub2xvZ3kgQ28uLCBMdGQuIHJvb3Qg
+Y2VydGlmaWNhdGUwHhcNMTcxMjExMDM0ODU2WhcNMjcxMjA5MDM0ODU2WjCBrDEL
+MAkGA1UEBhMCQ04xEDAOBgNVBAgTB0JlaWppbmcxIDAeBgNVBAcTF1hpY2hlbmcg
+UXUsIEJlaWppbmcgU2hpMSgwJgYDVQQKEx9DcmF6eSBIb3VzZSBUZWNobm9sb2d5
+IENvLiwgTHRkMSgwJgYDVQQLEx9DcmF6eSBIb3VzZSBUZWNobm9sb2d5IENvLiwg
+THRkMRUwEwYDVQQDEwxsb3ZlLmdmdy5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IB
+DwAwggEKAoIBAQDjB/8GecFQHhPLhmHP/kd9g9gGlrOX5Rj2ubmuOiwCxukmYwie
+QDP0XbcTvOps4Akji5K1lbLOJbEbFOejQDpx5mNa55pZSZ/1sHySOq/Kv1P3iXwz
+Ptkofe60x72s7At75N7/ljDl2TytZ8Wi9A+Aia2bgqgjeCNDjPLL2oZx9Zsn3RF8
+EfhiFg05y73WkSZ8n6c9Fqpd/vs4U7MME0UDI+FqbKfMoEkrKCTODqdl/O/nMZoQ
+Nz/aW+t922h27iN4ITRPkSG99UwcnJVT3iQQFvhdN5u9wfTCywxLIGYbZEYQo3Vn
+UMaLEYEsA36MKETYzWmtVg8vV9YF8suYwYLZAgMBAAGjggKvMIICqzAMBgNVHRMB
+Af8EAjAAMBEGCWCGSAGG+EIBAQQEAwIGQDAvBglghkgBhvhCAQMEIhYgaHR0cDov
+L2dmdy5jb20vY2EvZ2Z3X2NvbS5jYS5jcmwwDgYDVR0PAQH/BAQDAgMoMBMGA1Ud
+JQQMMAoGCCsGAQUFBwMBMEsGA1UdEgREMEKGIGh0dHA6Ly9nZncuY29tL2NhL2dm
+d19jb20uY2EuY3J0ggdnZncuY29tggkqLmdmdy5jb22BCmNhQGdmdy5jb20wSwYD
+VR0RBEQwQoYgaHR0cDovL2dmdy5jb20vY2EvZ2Z3X2NvbS5jYS5jcnSBCmNhQGdm
+dy5jb22CDGxvdmUuZ2Z3LmNvbYIEbG92ZTAdBgNVHQ4EFgQUzfhwRr36vH/r2I+l
+i4mx+8A8FTAwggEGBgNVHSMEgf4wgfuAFMjp2Sc4mmc3NfzOkKsOxWV4sKR3oYHX
+pIHUMIHRMQswCQYDVQQGEwJDTjEQMA4GA1UECBMHQmVpamluZzEgMB4GA1UEBxMX
+WGljaGVuZyBRdSwgQmVpamluZyBTaGkxKDAmBgNVBAoTH0NyYXp5IEhvdXNlIFRl
+Y2hub2xvZ3kgQ28uLCBMdGQxKDAmBgNVBAsTH0NyYXp5IEhvdXNlIFRlY2hub2xv
+Z3kgQ28uLCBMdGQxOjA4BgNVBAMTMUNyYXp5IEhvdXNlIFRlY2hub2xvZ3kgQ28u
+LCBMdGQuIHJvb3QgY2VydGlmaWNhdGWCCQCjc7oJH10jPjA8BggrBgEFBQcBAQQw
+MC4wLAYIKwYBBQUHMAKGIGh0dHA6Ly9nZncuY29tL2NhL2dmd19jb20uY2EuY3J0
+MDEGA1UdHwQqMCgwJqAkoCKGIGh0dHA6Ly9nZncuY29tL2NhL2dmd19jb20uY2Eu
+Y3JsMA0GCSqGSIb3DQEBCwUAA4IBAQA8nXy4sGJq8+kSqVuqWeh3tzS00Lwm0SgY
+cLcfSBi8f0VaRBzuAr11mvyII5ux5X3UaEEjhzS4+7ENzqZ3VQCt2jbaFtrAZgn7
+r4AZKrS5T1ae18f9mU7Y+upsyFRYu/YlDphtvqjSi63POf4fXVXYEBSPu0RXz/62
+2tiAKBrbhp9sf4ModScCLzP/kP2EIBlZLeGUD4LIfO2rhx6ATJKgCxzl83P3kLqp
+1ltOE9aCJV5y+LNQuJDX5ze57Bu/3O97H3uqcGjsUYcmzQEyaDB18Na8sP+M5L7j
+0hjL0R4gmuTBkMMrmLsCDNh6uwZN6si9XvqHX1ganuwnUUz8pOKr
+-----END CERTIFICATE-----

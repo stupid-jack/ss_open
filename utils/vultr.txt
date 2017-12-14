@@ -1,0 +1,16 @@
+Frankfurt, DE               |   fra-de-ping.vultr.com
+Amsterdam, NL               |   ams-nl-ping.vultr.com
+Paris, France               |   par-fr-ping.vultr.com
+London, UK                  |   lon-gb-ping.vultr.com
+Singapore                   |   sgp-ping.vultr.com
+Tokyo, Japan                |   hnd-jp-ping.vultr.com
+New York (NJ)               |   nj-us-ping.vultr.com
+Chicago, Illinois           |   il-us-ping.vultr.com
+Atlanta, Georgia            |   ga-us-ping.vultr.com
+Seattle, Washington         |   wa-us-ping.vultr.com
+Miami, Florida              |   fl-us-ping.vultr.com
+Dallas, Texas               |   tx-us-ping.vultr.com
+Silicon Valley,California   |   sjo-ca-us-ping.vultr.com
+Los Angeles, California     |   lax-ca-us-ping.vultr.com
+Sydney, Australia           |   syd-au-ping.vultr.com
+

@@ -1,0 +1,8 @@
+date +%F_%T >> /tmp/rc.local.log
+swapon /swap.2G 2>/dev/null &
+echo "-----------------------------------" >> /tmp/rc.local.log
+iptables-restore < /etc/iptables.save > /dev/null 2>&1
+python /data/ss/utils/new/change_method.py all >/dev/null 2>&1 &
+bash /data/ss/utils/new/check_socks_server.sh >/dev/null 2>&1 &
+#--------------------------------------------------
+

@@ -1,0 +1,301 @@
+#!/bin/bash
+# Common functions for ca-scripts.
+
+PROGNAME=$( basename $0 )
+CONFFILE="/etc/ca-scripts.conf"
+OVERRIDE_FILE=/tmp/$$ca_overrides.conf
+SHAREDIR=$(dirname $(readlink -f $0))/../tpl
+CRYPTKEY="-nodes"
+INDEXTPL="index-html"
+INDEXOUT=""
+
+# ideally, run these scripts as an unprivileged "ssl" user/group
+# and place users that need access to ssl certs into that group
+# no world-readable stuff here
+umask 027
+
+error() {
+    usage >&2
+    echo -e "ERROR: $1\n" >&2
+    exit 1
+}
+
+ca_check_var() {
+    local varname vartest
+
+    varname="$1"
+    vartest="$2"
+    eval "if [ ! $vartest \"\$$varname\" ]; then
+              echo '$varname value \"\$$varname\" failed \"$vartest\" test'
+          fi"
+}
+
+ca_override_conf() {
+    local varname
+
+
+    varname="${1#USER_}"
+    #eval "$varname=\"\$USER_$varname\""
+    # fix for user overrides scope issue
+    # push variables to a file to source them later
+    echo "$varname=\"\$USER_$varname\"" >> $OVERRIDE_FILE
+
+}
+
+ca_set_default() {
+    local varname vardef
+
+    varname="$1"
+    vardef="$2"
+    eval "if [ -z \"\$$varname\" ]; then
+              $varname=\"$vardef\"
+          fi"
+}
+
+ca_load_conf() {
+    local varname vartest varerr vardef error ca_name
+    if [ -r "$HOME/.ca-scripts.conf" ]; then
+        # Does a system-wide config exist? If so load it first.
+        if [ -r "$CONFFILE" ]; then
+            source "$CONFFILE"
+        fi
+        # Override system configuration with local values.
+	# If manually set on command-line, don't load.
+        if [ -z "$CONFFILECLI" ]; then
+            source "$HOME/.ca-scripts.conf"
+        fi
+    elif [ -r "$CONFFILE" ]; then
+        source "$CONFFILE"
+    else
+        if [ -n "$CONFFILECLI" ]; then
+            error "Unable to load $HOME/.ca-scripts.conf or $CONFFILE"
+        else
+            error "Unable to load $CONFFILE"
+        fi
+    fi
+
+    # TODO: Refactored config loader with error fallback, allowing local overrides.
+    #if [ ! -r "$CONFFILE" ]; then
+    #    error "Unable to find $CONFFILE."
+    #fi
+    ## XXX: seems like . <file> doesn't work if it's not relative to a directory
+    ##      look this up on the internet sometime to work out why...
+    #if [ "$CONFFILE" = "$( basename $CONFFILE )" ]; then
+    #    CONFFILE="./$CONFFILE"
+    #fi
+    #. "$CONFFILE"
+
+    error=""
+    while read vartest varname; do
+        varerr=$( ca_check_var "$varname" "$vartest" )
+        if [ -n "$varerr" ]; then
+            error="$error\n  $varerr"
+        fi
+    done <<__TESTS__
+-d CA_HOME
+-n CA_DOMAIN
+-n CA_DN_C
+-n CA_DN_ST
+-n CA_DN_L
+-n CA_DN_O
+-n CA_DN_OU
+-n CA_DN_CN
+__TESTS__
+    if [ -n "$error" ]; then
+        error "Parsing config file $CONFFILE failed:\n$error"
+    fi
+
+    # check user-provided variables and copy them to CA_ namespace to override
+    # any defaults that have potentially been set in configuration file
+    # XXX: this is getting really dirty now, perhaps find an alternative?
+    set | awk -F\= '/^USER_CA_[A-Z_]*=/{print $1}' | while read user_var; do
+        ca_override_conf "$user_var"
+    done
+    #Check if fike containing user overrides exist
+    # the file is created if any USER_CA.* variables are set
+     [ -f $OVERRIDE_FILE ] && source $OVERRIDE_FILE
+    # remove file after sourcing it
+     [ -f $OVERRIDE_FILE ] && rm -rf $OVERRIDE_FILE
+    # XXX: and this alternative should probably have better validation ;-)
+    case "$CA_CRT_TYPE" in
+        server|client|user) :;;
+        *) error "Unrecognised certificate type '$CA_CRT_TYPE'!";;
+    esac
+
+    # we need to do these first to use them in other default defs
+    # NOTE: bash's here-string syntax appends \n which tr turns to _ :(
+    # CA_NAME is NOT configurable, due to the breakage this could cause.
+    CA_NAME="$( echo -n "$CA_DOMAIN" | tr -c '[:alnum:]@-' _ )"
+    ca_set_default CA_EMAIL "ca@$CA_DOMAIN"
+
+    while read varname vardef; do
+        ca_set_default "$varname" "$vardef"
+    done <<__DEFAULTS__
+CA_DESC         $CA_DN_CN
+CA_DAYS         3652
+CA_PATHLEN      0
+CA_CRT_URI      http://$CA_DOMAIN/ca/$CA_NAME.ca.crt
+CA_CRL_URI      http://$CA_DOMAIN/ca/$CA_NAME.ca.crl
+CA_CRT_DAYS     365
+CA_CRL_DAYS     365
+CA_CRT_BITS     2048
+CA_CRT_TYPE     server
+CA_CRT_C        $CA_DN_C
+CA_CRT_ST       $CA_DN_ST
+CA_CRT_L        $CA_DN_L
+CA_CRT_O        $CA_DN_O
+CA_CRT_OU       $CA_DN_OU
+CA_CRT_E        $CA_EMAIL
+CA_DEFAULT_MD   sha256
+__DEFAULTS__
+}
+
+# TODO: Remove this, as it's no longer used.
+ca_sed_cmd() {
+    # MD5 in CA_CR[TL]_MD5_FP has a non alphabetic character :(
+    # XXX: pretty sure this is a dirty and wrong way of templating vars
+    #      but we can hope that there's no ascii 001 in the values...
+    set | awk -F\= '/^CA_[A-Z5_]*=/{print $1}' | while read ca_var; do
+        echo -e "s\001%$ca_var%\001${!ca_var}\001g;"
+    done
+}
+
+ca_template() {
+    local template dest sedstr
+
+    if [ -r "$1" ]; then
+        template="$1"
+    elif [ -r "$SHAREDIR/$1.tpl" ]; then
+        template="$SHAREDIR/$1.tpl"
+    else
+        error "Could not read from template $1"
+    fi
+    dest="$2"
+
+    while read ca_var; do
+        sedstr="${sedstr}s"$'\1'"%$ca_var%"$'\1'"${!ca_var}"$'\1'"g; "
+        #sedstr="${sedstr}s%$ca_var%${!ca_var}g; "
+    done < <(set | awk -F\= '/^CA_[A-Z5_]*=/{print $1}')
+
+    #echo "DEBUG: setstr=$sedstr"
+    sed -e "$sedstr" <"$template" >"$dest"
+}
+
+ca_gen_crl() {
+    openssl ca -config "$CA_HOME/cnf/$CA_NAME.ca.cnf" -gencrl -md sha1 \
+      -crldays "$CA_CRL_DAYS" -out "$CA_HOME/crl/$CA_NAME.ca.crl"
+    openssl crl -in "$CA_HOME/crl/$CA_NAME.ca.crl" \
+      -out "$CA_HOME/crl/$CA_NAME.ca.crl.der" -outform DER
+}
+
+ca_gen_p12() {
+    local cnf_name
+    cnf_name="$1"
+    openssl pkcs12 -export -descert -out $CA_HOME/p12/$cnf_name.p12 \
+      -in       $CA_HOME/crt/$cnf_name.crt \
+      -inkey    $CA_HOME/key/$cnf_name.key \
+      -certfile $CA_HOME/crt/$CA_NAME.ca.crt
+}
+
+ca_checksum() {
+    CA_CRT_MD5_FP="$( openssl x509 -in $CA_HOME/crt/$CA_NAME.ca.crt \
+      -noout -md5 -fingerprint | cut -d= -f2 )"
+    CA_CRT_SHA_FP="$( openssl x509 -in $CA_HOME/crt/$CA_NAME.ca.crt \
+      -noout -sha1 -fingerprint | cut -d= -f2 )"
+    CA_CRL_MD5_FP="$( openssl crl -in $CA_HOME/crl/$CA_NAME.ca.crl \
+      -noout -md5 -fingerprint | cut -d= -f2 )"
+    CA_CRL_SHA_FP="$( openssl crl -in $CA_HOME/crl/$CA_NAME.ca.crl \
+      -noout -sha1 -fingerprint | cut -d= -f2 )"
+}
+
+ca_cnf_name() {
+    local crt
+    crt="$1"
+    # work out what configuration files we should be using from the cert's CN
+    echo $( openssl x509 -in "$crt" -noout -nameopt sep_multiline,use_quote \
+      -subject | awk -F= '/CN=/{ gsub("[^A-Za-z0-9@-]", "_", $2); print $2}' )
+      #          grep "CN=" | cut -d= -f2 | tr -c '[:alnum:]@-' _ )
+      # originally did this like the above but tried awk instead. awk(1) seems
+      # to lie about it's egrep(1) support though as no matter what I tried the
+      # tr(1) regex didn't work in the gsub() call above.
+}
+
+ca_cnf_type() {
+    local crt
+    # XXX: dirty hack -- derive type from filename being *.TYPE.crt
+    crt="${1%.crt}"
+    crt="${crt##*.}"
+    case "$crt" in
+        server|client|user) echo "$crt";;
+        *) echo $CA_CRT_TYPE;;
+    esac
+}
+
+ca_find_cnf() {
+    local name _name _type
+    name="$1"
+
+    if [ -f "$name" ]; then
+        _name="$(ca_cnf_name $name)"
+        _type="$(ca_cnf_type $name)"
+        if [ $(basename "$name" .crt) = "${_name}.${_type}" ]; then
+            echo "${_name}.${_type}"
+            return
+        else
+            error "Unable to derive config details from certificate '$name'."
+        fi
+    fi
+
+    # XXX: this stil doesn't handle default types. FIXME when it's not 1am.
+    _name=$( echo -n "$name" | tr -c '[:alnum:]@-' _ )
+    if [ "$CA_CRT_TYPE" = "user" ]; then
+        # user names may have dots etc. in, so use munged version in match
+        # check if name is "user@domain", append $CA_DOMAIN if not
+        if [ "${_name%%@*}" = "$_name" \
+             -a -f "$CA_HOME/crt/${_name}@$CA_NAME.$CA_CRT_TYPE.crt" ];
+        then
+            # name is not fully-qualified, but a cert exists for it
+            echo "${_name}@$CA_NAME.$CA_CRT_TYPE"
+        elif [ -f "$CA_HOME/crt/$_name.$CA_CRT_TYPE.crt" ]; then
+            # name was fully-qualified and a cert exists
+            echo "$_name.$CA_CRT_TYPE"
+        else
+            error "Could not find $CA_CRT_TYPE certificate configuration matching '$name'"
+        fi
+    else
+        # check if name is fully-qualified -- contains more than 1 dot
+        # NOTE: we have to do this test with the unmunged name ...
+        if [ "${name%%.*}" = "$name" \
+             -a -f "$CA_HOME/crt/${_name}_$CA_NAME.$CA_CRT_TYPE.crt" ];
+        then
+            # name is not fully-qualified, but a cert exists for it
+            echo "${_name}_$CA_NAME.$CA_CRT_TYPE"
+        elif [ -f "$CA_HOME/crt/$_name.$CA_CRT_TYPE.crt" ]; then
+            # name was fully-qualified and a cert exists
+            echo "$_name.$CA_CRT_TYPE"
+        else
+            error "Could not find $CA_CRT_TYPE certificate configuration matching '$name'"
+        fi
+    fi
+}
+
+cert_info() {
+    local certFile="$1"
+    local certCN certIssuer certValid certExpire certCA certFilename
+
+    if [ -r "$certFile" ]; then
+	certFilename=$(basename "$certFile")
+        certCN="$(openssl x509 -in "$certFile" -noout -subject | sed -r 's|.*CN=(.*)|\1|; s|/[^/]*=.*$||')"
+        certIssuer="$(openssl x509 -in "$certFile" -noout -issuer | sed -r 's|.*CN=(.*)|\1|; s|/[^/]*=.*$||')"
+        certValid="$(openssl x509 -in "$certFile" -noout -startdate | sed -r 's|.*notBefore=(.*)|\1|;')"
+        certExpire="$(openssl x509 -in "$certFile" -noout -enddate | sed -r 's|.*notAfter=(.*)$|\1|;')"
+	if [ "$certCN" = "$certIssuer" ]; then
+            echo "$certFilename: $certCN expires on $certExpire"
+        else
+            echo "$certFilename: $certCN issued by $certIssuer expires on $certExpire"
+        fi
+    else
+        echo "ERROR: $certFile does not exist or cannot be read"
+    fi
+}
+

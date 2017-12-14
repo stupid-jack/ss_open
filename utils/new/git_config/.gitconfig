@@ -1,0 +1,16 @@
+[user]
+[credential]
+	helper = cache --timeout=3600
+[color]
+	ui = true
+[alias]
+	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+	lg2 = log --color --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+	ck = checkout
+	st = status
+	br = branch -a -vv
+	sf = show --pretty="" --name-only
+[push]
+	default = simple
+[core]
+	quotepath = off
